@@ -1,3 +1,29 @@
+body {
+  color: white;
+  background-color: #2e0249;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+.center {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .container {
   max-width: 1000px;
   margin: auto;
@@ -10,4 +36,50 @@
 .movie-cover {
   width: 100%;
   cursor: pointer;
+}
+
+.chosenMovie {
+  min-height: 500px;
+  background-size: cover;
+  display: flex;
+  align-items: flex-end;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.chosenMovie h1 {
+  font-size: 80px;
+  margin-bottom: auto;
+  color: gre;
+}
+
+.chosenMovie-content {
+  max-width: 60%;
+  padding-bottom: 30px;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4e9f3d;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #810ca8;
+}
+
+.star-icon {
+  position: relative;
+  color: yellow;
+}
+
+.rating {
+  font-size: 20px;
 }
