@@ -9,9 +9,18 @@ body {
   align-items: center;
 }
 
+.header-content h1 {
+  cursor: pointer;
+}
 .search-container {
   display: flex;
   flex-direction: column;
+  font-size: 20px;
+}
+
+#searchInput {
+  padding: 5px;
+  outline: none;
 }
 
 label {
@@ -33,12 +42,12 @@ label {
   padding: 80px;
 }
 
-.movie-cover {
+.card-image {
   width: 100%;
   cursor: pointer;
 }
 
-.chosenMovie {
+.chosenContent {
   min-height: 500px;
   background-size: cover;
   display: flex;
@@ -46,15 +55,34 @@ label {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.chosenMovie h1 {
+.chosenContent h1 {
   font-size: 80px;
   margin-bottom: auto;
   color: gre;
 }
 
-.chosenMovie-content {
+.chosenContent-content {
   max-width: 60%;
   padding-bottom: 30px;
+}
+
+.headerButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4e9f3d;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.headerButton:hover {
+  background-color: #810ca8;
 }
 
 .button {
@@ -82,4 +110,9 @@ label {
 
 .rating {
   font-size: 20px;
+}
+
+.movie-icon {
+  vertical-align: middle;
+  margin-left: 10px;
 }

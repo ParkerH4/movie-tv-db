@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
-import MovieCard from "./components/MovieCard/MovieCard.js";
+import ContentCard from "./components/ContentCard.js";
 import { IoMdStar } from "react-icons/io";
+import { BiMoviePlay } from "react-icons/bi";
 
 const App = () => {
   // Constants
@@ -10,14 +11,19 @@ const App = () => {
   const BASE_URL = "https://api.themoviedb.org/3";
 
   // State variables
-  const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState({});
+  const [contentType, setContentType] = useState("");
+  const [content, setContent] = useState([]);
+  const [selectedContent, setSelectedContent] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetching the movies based on what is searched by the user
-  // eslint-disable-next-line
-  const fetchMovies = async () => {
-    const url = searchQuery ? `${BASE_URL}/search/movie` : `${BASE_URL}/discover/movie`;
+  // Fetching the content based on the selected content type (movies or TV shows)
+  const fetchContent = async () => {
+    let url = searchQuery ? `${BASE_URL}/search/movie` : `${BASE_URL}/discover/movie`;
+
+    if (contentType === "tv") {
+      url = searchQuery ? `${BASE_URL}/search/tv` : `${BASE_URL}/tv/top_rated?language=en-US&page=1'`;
+    }
+
     const {
       data: { results },
     } = await axios.get(url, {
@@ -27,34 +33,46 @@ const App = () => {
       },
     });
 
-    setMovies(results);
+    setContent(results);
+    setSelectedContent(results[0]);
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, [fetchMovies]);
+    fetchContent();
+    // eslint-disable-next-line
+  }, [contentType]);
 
-  // Rendering each movie card and mapping it to it's proper details based on id
-  const renderMovies = () => movies.map((movie) => <MovieCard key={movie.id} movie={movie} setSelectedMovie={handleMovieClick} />);
+  // Rendering each content card and mapping it to its proper details based on id
+  const renderContent = () => content.map((item) => <ContentCard key={item.id} content={item} setSelectedContent={handleContentClick} />);
 
-  // Movies changes as user types or submits a title
+  // Content type changes between movies and TV show buttons
+  const handleContentTypeChange = (type) => {
+    setContentType(type);
+  };
+
+  // Search query changes as user types or submits a title
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    fetchMovies();
+    fetchContent();
   };
 
-  // when a movie is clicked it is set to the state of that movie
-  const handleMovieClick = (movie) => {
-    setSelectedMovie(movie);
+  // when a content item is clicked, it is set as the selectedContent item
+  const handleContentClick = (item) => {
+    setSelectedContent(item);
   };
 
-  // handling the click of the trailer button (searches youtube and finds the youtube URL based on movie id)
+  // handling the click of the trailer button (searches YouTube and finds the YouTube URL based on item id)
   const handlePlayTrailer = async () => {
-    const url = `${BASE_URL}/movie/${selectedMovie.id}/videos`;
+    let url = `${BASE_URL}/movie/${selectedContent.id}/videos`;
+
+    if (contentType === "tv") {
+      url = `${BASE_URL}/tv/${selectedContent.id}/videos`;
+    }
+
     const {
       data: { results },
     } = await axios.get(url, {
@@ -70,15 +88,25 @@ const App = () => {
     }
   };
 
-  const chosenMovieBackdrop = {
-    backgroundImage: `url(https://image.tmdb.org/t/p/w1280${selectedMovie.backdrop_path})`,
+  const chosenContentBackdrop = {
+    backgroundImage: `url(https://image.tmdb.org/t/p/w1280${selectedContent.backdrop_path})`,
   };
 
   return (
     <div className="App">
       <div className="header">
         <div className="header-content center">
-          <h1>ShowtimeDB</h1>
+          <h1 onClick={() => window.location.reload()}>
+            ShowtimeDB <BiMoviePlay size={40} className="movie-icon" />
+          </h1>
+          <div>
+            <button className={`headerButton ${contentType === "movies" ? "active" : ""}`} onClick={() => handleContentTypeChange("movies")}>
+              Movies
+            </button>
+            <button className={`headerButton ${contentType === "tv" ? "active" : ""}`} onClick={() => handleContentTypeChange("tv")}>
+              TV Shows
+            </button>
+          </div>
           <form onSubmit={handleSearchSubmit}>
             <div className="search-container">
               <label>Search Content</label>
@@ -87,22 +115,22 @@ const App = () => {
           </form>
         </div>
 
-        <div className="chosenMovie" style={chosenMovieBackdrop}>
-          <div className="chosenMovie-content center">
-            <h1>{selectedMovie.title}</h1>
+        <div className="chosenContent" style={chosenContentBackdrop}>
+          <div className="chosenContent-content center">
+            <h1>{selectedContent.title || selectedContent.name}</h1>
             <div className="rating">
               <IoMdStar size={40} className="star-icon" />
-              <span>{selectedMovie.vote_average}</span>
+              <span>{selectedContent.vote_average}</span>
             </div>
-            <h3>{selectedMovie.release_date}</h3>
-            <p>{selectedMovie.overview}</p>
+            <h3>{selectedContent.release_date || selectedContent.first_air_date}</h3>
+            <p>{selectedContent.overview}</p>
             <button className="button" onClick={handlePlayTrailer}>
               Watch trailer
             </button>
           </div>
         </div>
       </div>
-      <div className="container center">{renderMovies()}</div>
+      <div className="container center">{renderContent()}</div>
     </div>
   );
 };
